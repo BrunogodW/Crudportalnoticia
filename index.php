@@ -2,6 +2,7 @@
 session_start();
 include_once './config/config.php';
 include_once './classes/Usuario.php';
+include_once './classes/Noticia.php';
 
 
 $usuario = new Usuario($db);
@@ -28,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Document</title>
     <link rel="stylesheet" href="CSS/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+    
 </head>
 
 <body>
@@ -116,6 +117,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </a>
         </nav>
     </aside>
+
+     <div class="contMain">
+            <span id="tit1">Notícias</span>
+            <hr id="hrT">
+            <div class="containerNoticias">
+            
+            <?php
+            $news = new Noticia($db);   
+            $user = new Usuario($db);
+            $stmt = $news->ler();
+            ?>
+            <?php while ($noticia = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+                <?php
+                $nome = $user->lerPorId($noticia["autor"])["nome"];
+                ?>
+                <div id="noticia" class="noticia-card">
+                    <h1 class="noticia-titulo"><?php echo $noticia["titulo"] ?></h1>
+                    <hr class="noticia-hr">
+                    <p class="noticia-conteudo"><?php echo $noticia["noticia"] ?></p>
+                    <p class="noticia-autor"><strong><small><?php echo $nome . ", " . $noticia["data"] ?></small></strong></p>
+                </div>
+            <?php endwhile; ?>
+        </div>
+
 
     <script src="script.js"></script>
 
